@@ -1,132 +1,113 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>PowerStay - Login / Registro</title>
+  <meta charset="UTF-8">
+  <title>PowerStay - Sistema de Alunos</title>
   <style>
     body {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    #app {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
+    .container {
       max-width: 400px;
-      width: 100%;
+      margin: 60px auto;
+      background: white;
       padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-align: center;
-      box-shadow: 0 8px 32px rgba(31,38,135,0.37);
-      backdrop-filter: blur(10px);
     }
-    input, button, select {
-      width: 100%;
-      margin-bottom: 15px;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
+    h1 {
+      margin-bottom: 20px;
+    }
+    input, select {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: #6c5ce7;
-      color: #fff;
-      font-weight: bold;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #5a4de1;
+      background: #45a049;
     }
-    .link-toggle {
-      cursor: pointer;
-      text-decoration: underline;
-      margin-top: 10px;
-      display: inline-block;
+    .hidden {
+      display: none;
     }
-    .hidden { display: none; }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Login -->
-    <div id="login-screen">
-      <h1>PowerStay</h1>
-      <input type="email" id="login-email" placeholder="E-mail" required />
-      <input type="password" id="login-password" placeholder="Senha" required />
+    <div id="login-screen" class="container">
+      <h1>Login</h1>
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Senha">
       <button onclick="login()">Entrar</button>
-      <div class="link-toggle" onclick="showRegister()">Não tem conta? Registre-se</div>
+      <p>Não tem conta? <a href="#" onclick="showRegister()">Cadastre-se</a></p>
     </div>
 
-    <!-- Registro -->
-    <div id="register-screen" class="hidden">
-      <h1>Registrar</h1>
-      <input type="text" id="register-name" placeholder="Nome completo" required />
-      <input type="email" id="register-email" placeholder="E-mail" required />
-      <input type="password" id="register-password" placeholder="Senha" required />
+    <div id="register-screen" class="container hidden">
+      <h1>Cadastro</h1>
+      <input type="text" id="register-name" placeholder="Nome">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Senha">
       <button onclick="register()">Registrar</button>
-      <div class="link-toggle" onclick="showLogin()">Já tem conta? Faça login</div>
+      <p>Já tem conta? <a href="#" onclick="showLogin()">Login</a></p>
     </div>
 
-    <!-- Menu -->
-    <div id="menu-screen" class="hidden">
-      <h1>Bem-vindo ao PowerStay!</h1>
-      <p id="welcome-user"></p>
+    <div id="menu-screen" class="container hidden">
+      <h1 id="welcome-user"></h1>
       <button onclick="showRegistroFrequencia()">Registro de Frequência</button>
-      <button onclick="showCadastrarTurma()">Cadastrar nova turma</button>
-      <button onclick="showCadastrarAluno()">Cadastrar novo aluno</button>
-      <button onclick="showRelatorioMensal()">Relatório mensal</button>
+      <button onclick="showCadastrarTurma()">Cadastrar Turma</button>
+      <button onclick="showCadastrarAluno()">Cadastrar Aluno</button>
+      <button onclick="showRelatorioMensal()">Relatório Mensal</button>
       <button onclick="logout()">Sair</button>
     </div>
 
-    <!-- Registro de Frequência -->
-    <div id="frequencia-screen" class="hidden">
-      <h2>Registro de Frequência</h2>
-      <input type="date" id="data-frequencia" />
-      <div id="lista-alunos"><p>Sem alunos cadastrados.</p></div>
+    <div id="frequencia-screen" class="container hidden">
+      <h1>Registro de Frequência</h1>
+      <div id="lista-alunos"></div>
       <button onclick="voltarMenu()">Voltar</button>
     </div>
 
-    <!-- Cadastro de Turma -->
-    <div id="cadastrar-turma-screen" class="hidden">
-      <h2>Cadastrar Turma</h2>
-      <input type="text" id="turma-nome" placeholder="Nome da Turma" />
-      <select id="turma-modalidade">
-        <option value="">Selecione a modalidade</option>
-        <option value="Infantil">Infantil</option>
-        <option value="Juvenil">Juvenil</option>
-        <option value="Adulto">Adulto</option>
-      </select>
-      <button onclick="salvarTurma()">Salvar</button>
+    <div id="cadastrar-turma-screen" class="container hidden">
+      <h1>Cadastrar Turma</h1>
+      <input id="turma-nome" placeholder="Nome da Turma">
+      <input id="turma-modalidade" placeholder="Modalidade">
+      <button onclick="salvarTurma()">Salvar Turma</button>
       <button onclick="voltarMenu()">Voltar</button>
     </div>
 
-    <!-- Cadastro de Aluno -->
-    <div id="cadastrar-aluno-screen" class="hidden">
-      <h2>Cadastrar Aluno</h2>
-      <input type="text" id="aluno-nome" placeholder="Nome do Aluno" />
-      <input type="number" id="aluno-idade" placeholder="Idade" />
-      <input type="text" id="aluno-foto" placeholder="URL da Foto" />
+    <div id="cadastrar-aluno-screen" class="container hidden">
+      <h1>Cadastrar Aluno</h1>
+      <input id="aluno-nome" placeholder="Nome do Aluno">
+      <input id="aluno-idade" placeholder="Idade">
+      <input id="aluno-foto" placeholder="URL da Foto">
       <select id="aluno-turma"></select>
-      <button onclick="salvarAluno()">Salvar</button>
+      <button onclick="salvarAluno()">Salvar Aluno</button>
       <button onclick="voltarMenu()">Voltar</button>
     </div>
 
-    <!-- Relatório Mensal -->
-    <div id="relatorio-screen" class="hidden">
-      <h2>Relatório Mensal</h2>
-      <input type="month" id="relatorio-mes" />
+    <div id="relatorio-screen" class="container hidden">
+      <h1>Relatório Mensal</h1>
+      <input id="relatorio-mes" type="month">
       <select id="relatorio-turma"></select>
-      <button onclick="gerarRelatorio()">Gerar Relatório</button>
+      <button onclick="gerarRelatorio()">Gerar</button>
+      <div id="relatorio-resultado" style="margin-top:15px"></div>
       <button onclick="voltarMenu()">Voltar</button>
-      <div id="relatorio-resultado"></div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
