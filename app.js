@@ -1,113 +1,46 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>PowerStay - Sistema de Alunos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 400px;
-      margin: 60px auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-    input, select {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 10px;
-      border: none;
-      background: #4caf50;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #45a049;
-    }
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-  <div id="app">
-    <div id="login-screen" class="container">
-      <h1>Login</h1>
-      <input type="email" id="login-email" placeholder="Email">
-      <input type="password" id="login-password" placeholder="Senha">
-      <button onclick="login()">Entrar</button>
-      <p>Não tem conta? <a href="#" onclick="showRegister()">Cadastre-se</a></p>
-    </div>
+let users = JSON.parse(localStorage.getItem('users') || '[]');
+let alunos = JSON.parse(localStorage.getItem('alunos') || '[]');
+let turmas = JSON.parse(localStorage.getItem('turmas') || '[]');
 
-    <div id="register-screen" class="container hidden">
-      <h1>Cadastro</h1>
-      <input type="text" id="register-name" placeholder="Nome">
-      <input type="email" id="register-email" placeholder="Email">
-      <input type="password" id="register-password" placeholder="Senha">
-      <button onclick="register()">Registrar</button>
-      <p>Já tem conta? <a href="#" onclick="showLogin()">Login</a></p>
-    </div>
+function seedTurmas() {
+  if (turmas.length === 0) {
+    turmas = [
+      { nome: "Boxe", modalidade: "Luta" },
+      { nome: "Muay Thai", modalidade: "Luta" },
+      { nome: "Jiu-Jitsu", modalidade: "Luta" },
+      { nome: "CrossFit", modalidade: "Treinamento Funcional" },
+      { nome: "Funcional", modalidade: "Treinamento Funcional" }
+    ];
+    localStorage.setItem('turmas', JSON.stringify(turmas));
+  }
+}
 
-    <div id="menu-screen" class="container hidden">
-      <h1 id="welcome-user"></h1>
-      <button onclick="showRegistroFrequencia()">Registro de Frequência</button>
-      <button onclick="showCadastrarTurma()">Cadastrar Turma</button>
-      <button onclick="showCadastrarAluno()">Cadastrar Aluno</button>
-      <button onclick="showRelatorioMensal()">Relatório Mensal</button>
-      <button onclick="logout()">Sair</button>
-    </div>
+function seedAlunos() {
+  if (alunos.length === 0) {
+    alunos = [
+      { nome: "Ana Souza", idade: 23, foto: "perfil1.png", turma: "Boxe" },
+      { nome: "Carlos Silva", idade: 30, foto: "perfil2.png", turma: "CrossFit" },
+      { nome: "Beatriz Lima", idade: 28, foto: "perfil3.png", turma: "Muay Thai" },
+      { nome: "Lucas Costa", idade: 26, foto: "perfil4.png", turma: "Jiu-Jitsu" },
+      { nome: "Mariana Dias", idade: 22, foto: "perfil5.png", turma: "Funcional" }
+    ];
+    localStorage.setItem('alunos', JSON.stringify(alunos));
+  }
+}
 
-    <div id="frequencia-screen" class="container hidden">
-      <h1>Registro de Frequência</h1>
-      <div id="lista-alunos"></div>
-      <button onclick="voltarMenu()">Voltar</button>
-    </div>
+function login() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const user = users.find(u => u.email === email && u.password === password);
+  if (user) {
+    alert('Login realizado!');
+    // aqui iria redirecionar ou mostrar dashboard
+  } else {
+    alert('Credenciais inválidas!');
+  }
+}
 
-    <div id="cadastrar-turma-screen" class="container hidden">
-      <h1>Cadastrar Turma</h1>
-      <input id="turma-nome" placeholder="Nome da Turma">
-      <input id="turma-modalidade" placeholder="Modalidade">
-      <button onclick="salvarTurma()">Salvar Turma</button>
-      <button onclick="voltarMenu()">Voltar</button>
-    </div>
-
-    <div id="cadastrar-aluno-screen" class="container hidden">
-      <h1>Cadastrar Aluno</h1>
-      <input id="aluno-nome" placeholder="Nome do Aluno">
-      <input id="aluno-idade" placeholder="Idade">
-      <input id="aluno-foto" placeholder="URL da Foto">
-      <select id="aluno-turma"></select>
-      <button onclick="salvarAluno()">Salvar Aluno</button>
-      <button onclick="voltarMenu()">Voltar</button>
-    </div>
-
-    <div id="relatorio-screen" class="container hidden">
-      <h1>Relatório Mensal</h1>
-      <input id="relatorio-mes" type="month">
-      <select id="relatorio-turma"></select>
-      <button onclick="gerarRelatorio()">Gerar</button>
-      <div id="relatorio-resultado" style="margin-top:15px"></div>
-      <button onclick="voltarMenu()">Voltar</button>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
+window.onload = () => {
+  seedTurmas();
+  seedAlunos();
+}
