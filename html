@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PowerStay - Login / Registro</title>
+    <style>
+        /* Reset e estilo básico */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        #app {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px 35px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+        }
+
+        /* Logo PowerStay */
+        #logo {
+            font-size: 48px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            color: white;
+            font-style: italic;
+            text-shadow: 2px 2px 8px rgba(255,255,255,0.7);
+            user-select: none;
+            font-family: 'Segoe UI Black', 'Arial Black', Arial, sans-serif;
+        }
+
+        h2 {
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            color: #dfe6e9;
+            letter-spacing: 1.5px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        label {
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 18px;
+            font-size: 15px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #a29bfe;
+        }
+
+        button {
+            background-color: #6c5ce7;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            user-select: none;
+        }
+
+        button:hover {
+            background-color: #5a4de1;
+        }
+
+        .link-toggle {
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #dfe6e9;
+            text-align: center;
+            user-select: none;
+            text-decoration: underline;
+        }
+
+        .error {
+            color: #ff7675;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .success {
+            color: #55efc4;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        /* Esconder registro para iniciar com login */
+        #register-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="logo">PowerStay</div>
+
+        <form id="login-form" aria-label="Formulário de Login">
+            <h2>Entrar</h2>
+            <div class="error" id="login-error"></div>
+
+            <label for="login-email">E-mail</label>
+            <input type="email" id="login-email" aria-required="true" required placeholder="email@exemplo.com" autocomplete="username" />
+
+            <label for="login-password">Senha</label>
+            <input type="password" id="login-password" aria-required="true" required placeholder="Senha" autocomplete="current-password" />
+
+            <button type="submit">Entrar</button>
+
+            <div class="link-toggle" id="to-register" tabindex="0">Não tem conta? Registre-se</div>
+        </form>
+
+        <form id="register-form" aria-label="Formulário de Registro">
+            <h2>Registrar</h2>
+            <div class="error" id="register-error"></div>
+            <div class="success" id="register-success"></div>
+
+            <label for="reg-name">Nome completo</label>
+            <input type="text" id="reg-name" aria-required="true" required placeholder="Seu nome" autocomplete="name" />
+
+            <label for="reg-email">E-mail</label>
+            <input type="email" id="reg-email" aria-required="true" required placeholder="email@exemplo.com" autocomplete="email" />
+
+            <label for="reg-password">Senha</label>
+            <input type="password" id="reg-password" aria-required="true" required placeholder="Senha segura" autocomplete="new-password" />
+
+            <button type="submit">Registrar</button>
+
+            <div class="link-toggle" id="to-login" tabindex="0">Já tem conta? Faça o login</div>
+        </form>
+    </div>
+
+    <script>
+        function getUsers() {
+            const users = localStorage.getItem('users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // Validação simples do registro
+        function validateRegistration(name, email, password) {
+            if (name.trim() === '' || email.trim() === '' || password.trim() === '') {
+                return 'Todos os campos são obrigatórios.';
+            }
+            if (!email.includes('@')) {
+                return 'Digite um e-mail válido.';
+            }
+            if (password.length < 6) {
+                return 'A senha deve ter ao menos 6 caracteres.';
+            }
+            return null;
+        }
+
+        // Validação simples do login
+        function validateLogin(email, password) {
+            if (email.trim() === '' || password.trim() === '') {
+                return 'E-mail e senha são necessários.';
+            }
+            return null;
+        }
+
+        // Alterna visibilidade dos formulários
+        function showForm(formName) {
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            const regError = document.getElementById('register-error');
+            const regSuccess = document.getElementById('register-success');
+            const loginError = document.getElementById('login-error');
+
+            regError.textContent = '';
+            regSuccess.textContent = '';
+            loginError.textContent = '';
+
+            if (formName === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+
+        document.getElementById('to-register').addEventListener('click', () => showForm('register'));
+        document.getElementById('to-login').addEventListener('click', () => showForm('login'));
+
+        // Registro
+        document.getElementById('register-form').addEventListener('submit', e => {
+            e.preventDefault();
+
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value.toLowerCase();
+            const password = document.getElementById('reg-password').value;
+
+            const errorDiv = document.getElementById('register-error');
+            const successDiv = document.getElementById('register-success');
+
+            errorDiv.textContent = '';
+            successDiv.textContent = '';
+
+            const validationError = validateRegistration(name, email, password);
+            if (validationError) {
+                errorDiv.textContent = validationError;
+                return;
+            }
+
+            const users = getUsers();
+            const exists = users.some(u => u.email === email);
+            if (exists) {
+                errorDiv.textContent = 'Este e-mail já está cadastrado.';
+                return;
+            }
+
+            users.push({name, email, password});
+            saveUsers(users);
+
+            successDiv.textContent = 'Registro realizado com sucesso! Redirecionando para login...';
+
+            // Limpar inputs
+            document.getElementById('register-form').reset();
+
+            setTimeout(() => {
+                showForm('login');
+            }, 1800);
+        });
+
+        // Login
+        document.getElementById('login-form').addEventListener('submit', e => {
+            e.preventDefault();
+
+            const email = document.getElementById('login-email').value.toLowerCase();
+            const password = document.getElementById('login-password').value;
+
+            const errorDiv = document.getElementById('login-error');
+            errorDiv.textContent = '';
+
+            const validationError = validateLogin(email, password);
+            if (validationError) {
+                errorDiv.textContent = validationError;
+                return;
+            }
+
+            const users = getUsers();
+            const user = users.find(u => u.email === email && u.password === password);
+            if (!user) {
+                errorDiv.textContent = 'E-mail ou senha incorretos.';
+                return;
+            }
+
+            // Grava usuário logado para uso na pagina frequencia.html
+            localStorage.setItem('loggedUser', JSON.stringify(user));
+
+            // Redireciona para página frequência
+            window.location.href = 'frequencia.html';
+        });
+
+        // Ao carregar a página, verifica se usuário está logado e direciona direto para frequencia
+        window.addEventListener('load', () => {
+            const loggedUser = localStorage.getItem('loggedUser');
+            if (loggedUser) {
+                window.location.href = 'frequencia.html';
+            }
+        });
+    </script>
+</body>
+</html>
+
