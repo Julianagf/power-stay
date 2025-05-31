@@ -1,66 +1,68 @@
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: url('fundo-academia.jpg') no-repeat center center/cover;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: Arial, sans-serif;
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.95);
-  padding: 30px;
-  border-radius: 15px;
-  width: 350px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+.sidebar {
+  width: 220px;
+  background: #2c3e50;
+  height: 100vh;
+  position: fixed;
+  color: #fff;
+  padding: 20px;
 }
 
-.card h2 {
-  margin-bottom: 20px;
-  color: #222;
+.sidebar h2 {
+  color: #1abc9c;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
+.sidebar button, .sidebar a {
+  display: block;
+  color: #fff;
   margin: 10px 0;
+  text-decoration: none;
+  background: none;
   border: none;
-  border-radius: 8px;
-  background: #f0f0f0;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  background: #e63946;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
+  text-align: left;
   cursor: pointer;
-  margin-top: 12px;
-}
-
-button:hover {
-  background: #d62839;
 }
 
 .header {
-  background: rgba(0,0,0,0.85);
-  color: white;
-  padding: 20px;
+  height: 60px;
+  background: #1abc9c;
+  margin-left: 220px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  padding: 0 20px;
+  color: #fff;
 }
 
-.header h1 {
-  margin: 0;
+.main {
+  margin-left: 220px;
+  padding: 20px;
 }
 
-.avatar {
-  width: 50px;
+.card {
+  background: #ecf0f1;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+img.profile-pic {
+  width: 80px;
   border-radius: 50%;
+}
+
+button.primary {
+  background: #1abc9c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
 }
