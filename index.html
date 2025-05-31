@@ -6,13 +6,27 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="card">
-    <h2>Bem-vindo ao PowerStay</h2>
+
+  <!-- Tela de Login -->
+  <div class="card" id="login-card">
+    <h2>Login PowerStay</h2>
     <input type="email" id="login-email" placeholder="Email">
     <input type="password" id="login-password" placeholder="Senha">
-    <button type="button" onclick="login()">Entrar</button>
+    <button onclick="login()">Entrar</button>
     <p style="margin-top: 10px;">
-      <a href="#" onclick="alert('Área de cadastro em desenvolvimento!')">Cadastrar-se</a>
+      <a href="#" onclick="showRegister()">Cadastrar-se</a>
+    </p>
+  </div>
+
+  <!-- Tela de Cadastro -->
+  <div class="card" id="register-card" style="display:none;">
+    <h2>Cadastro PowerStay</h2>
+    <input type="email" id="register-email" placeholder="Email">
+    <input type="password" id="register-password" placeholder="Senha">
+    <input type="password" id="register-confirm-password" placeholder="Confirme a senha">
+    <button onclick="register()">Cadastrar</button>
+    <p style="margin-top: 10px;">
+      <a href="#" onclick="showLogin()">Já tenho conta</a>
     </p>
   </div>
 
