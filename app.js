@@ -8,8 +8,8 @@ function seedTurmas() {
       { nome: "Boxe", modalidade: "Luta" },
       { nome: "Muay Thai", modalidade: "Luta" },
       { nome: "Jiu-Jitsu", modalidade: "Luta" },
-      { nome: "CrossFit", modalidade: "Treinamento Funcional" },
-      { nome: "Funcional", modalidade: "Treinamento Funcional" }
+      { nome: "CrossFit", modalidade: "Funcional" },
+      { nome: "Funcional", modalidade: "Funcional" }
     ];
     localStorage.setItem('turmas', JSON.stringify(turmas));
   }
@@ -28,19 +28,28 @@ function seedAlunos() {
   }
 }
 
+function seedUsuarios() {
+  if (users.length === 0) {
+    users = [
+      { name: "Administrador", email: "admin@academia.com", password: "1234" }
+    ];
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+}
+
 function login() {
   const email = document.getElementById('login-email').value;
   const password = document.getElementById('login-password').value;
   const user = users.find(u => u.email === email && u.password === password);
   if (user) {
-    alert('Login realizado!');
-    // aqui iria redirecionar ou mostrar dashboard
+    window.location.href = "dashboard.html";
   } else {
     alert('Credenciais inválidas!');
   }
 }
 
 window.onload = () => {
+  seedUsuarios();
   seedTurmas();
   seedAlunos();
 }
