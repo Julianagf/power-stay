@@ -1,35 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>PowerStay | Login</title>
+  <title>PowerStay - Sistema</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Tela de Login -->
-  <div class="card" id="login-card">
-    <h2>Login PowerStay</h2>
-    <input type="email" id="login-email" placeholder="Email">
-    <input type="password" id="login-password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-    <p style="margin-top: 10px;">
-      <a href="#" onclick="showRegister()">Cadastrar-se</a>
-    </p>
+<div class="sidebar">
+  <h2>PowerStay</h2>
+  <button onclick="showMenu()"><i class="fa fa-home"></i> Início</button>
+  <button onclick="showRegistroFrequencia()"><i class="fa fa-calendar-check"></i> Registro de Frequência</button>
+  <button onclick="showCadastrarTurma()"><i class="fa fa-users"></i> Cadastrar Turma</button>
+  <button onclick="showCadastrarAluno()"><i class="fa fa-user-plus"></i> Cadastrar Aluno</button>
+  <button onclick="showRelatorioMensal()"><i class="fa fa-file-alt"></i> Relatório Mensal</button>
+  <button onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+</div>
+
+<div class="header">
+  <h3 id="header-title">Bem-vindo ao PowerStay</h3>
+</div>
+
+<div class="main" id="app">
+  <div id="menu-screen" class="card">
+    <h2>Início</h2>
+    <p>Bem-vindo, <span id="welcome-user"></span>!</p>
   </div>
 
-  <!-- Tela de Cadastro -->
-  <div class="card" id="register-card" style="display:none;">
-    <h2>Cadastro PowerStay</h2>
-    <input type="email" id="register-email" placeholder="Email">
-    <input type="password" id="register-password" placeholder="Senha">
-    <input type="password" id="register-confirm-password" placeholder="Confirme a senha">
-    <button onclick="register()">Cadastrar</button>
-    <p style="margin-top: 10px;">
-      <a href="#" onclick="showLogin()">Já tenho conta</a>
-    </p>
+  <div id="frequencia-screen" class="card hidden">
+    <h2>Registro de Frequência</h2>
+    <div id="lista-alunos"></div>
   </div>
 
-  <script src="app.js"></script>
+  <div id="cadastrar-turma-screen" class="card hidden">
+    <h2>Cadastrar Nova Turma</h2>
+    <input type="text" id="turma-nome" placeholder="Nome da Turma"><br><br>
+    <input type="text" id="turma-modalidade" placeholder="Modalidade"><br><br>
+    <button class="primary" onclick="salvarTurma()">Salvar Turma</button>
+  </div>
+
+  <div id="cadastrar-aluno-screen" class="card hidden">
+    <h2>Cadastrar Novo Aluno</h2>
+    <input type="text" id="aluno-nome" placeholder="Nome do Aluno"><br><br>
+    <input type="number" id="aluno-idade" placeholder="Idade"><br><br>
+    <input type="text" id="aluno-foto" placeholder="URL da Foto"><br><br>
+    <select id="aluno-turma"></select><br><br>
+    <button class="primary" onclick="salvarAluno()">Salvar Aluno</button>
+  </div>
+
+  <div id="relatorio-screen" class="card hidden">
+    <h2>Relatório Mensal</h2>
+    <input type="month" id="relatorio-mes"><br><br>
+    <select id="relatorio-turma"></select><br><br>
+    <button class="primary" onclick="gerarRelatorio()">Gerar Relatório</button>
+    <div id="relatorio-resultado" style="margin-top: 20px;"></div>
+  </div>
+</div>
+
+<script src="scripts.js"></script>
 </body>
 </html>
