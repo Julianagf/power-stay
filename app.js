@@ -1,92 +1,108 @@
-let users = JSON.parse(localStorage.getItem('users') || '[]');
-let alunos = JSON.parse(localStorage.getItem('alunos') || '[]');
-let turmas = JSON.parse(localStorage.getItem('turmas') || '[]');
+let turmas = [
+  { nome: "Turma A", modalidade: "Musculação" },
+  { nome: "Turma B", modalidade: "Pilates" },
+  { nome: "Turma C", modalidade: "Yoga" }
+];
 
-function seedTurmas() {
-  if (turmas.length === 0) {
-    turmas = [
-      { nome: "Boxe", modalidade: "Luta" },
-      { nome: "Muay Thai", modalidade: "Luta" },
-      { nome: "Jiu-Jitsu", modalidade: "Luta" },
-      { nome: "CrossFit", modalidade: "Treinamento Funcional" },
-      { nome: "Funcional", modalidade: "Treinamento Funcional" }
-    ];
-    localStorage.setItem('turmas', JSON.stringify(turmas));
+let alunos = [
+  { nome: "Ana Silva", idade: 25, foto: "https://i.pravatar.cc/80?img=5", turma: "Turma A" },
+  { nome: "Carlos Souza", idade: 30, foto: "https://i.pravatar.cc/80?img=8", turma: "Turma B" },
+  { nome: "Beatriz Rocha", idade: 22, foto: "https://i.pravatar.cc/80?img=12", turma: "Turma C" }
+];
+
+function showMenu() {
+  toggleScreen('menu-screen', 'Início');
+}
+
+function showRegistroFrequencia() {
+  toggleScreen('frequencia-screen', 'Registro de Frequência');
+  atualizarListaAlunos();
+}
+
+function showCadastrarTurma() {
+  toggleScreen('cadastrar-turma-screen', 'Cadastrar Turma');
+}
+
+function showCadastrarAluno() {
+  toggleScreen('cadastrar-aluno-screen', 'Cadastrar Aluno');
+  atualizarSelectTurmas('aluno-turma');
+}
+
+function showRelatorioMensal() {
+  toggleScreen('relatorio-screen', 'Relatório Mensal');
+  atualizarSelectTurmas('relatorio-turma');
+}
+
+function toggleScreen(screenId, title) {
+  document.querySelectorAll('.main .card').forEach(card => card.classList.add('hidden'));
+  document.getElementById(screenId).classList.remove('hidden');
+  document.getElementById('header-title').textContent = title;
+}
+
+function salvarTurma() {
+  const nome = document.getElementById('turma-nome').value;
+  const modalidade = document.getElementById('turma-modalidade').value;
+  if (nome && modalidade) {
+    turmas.push({ nome, modalidade });
+    alert('Turma cadastrada!');
+    document.getElementById('turma-nome').value = '';
+    document.getElementById('turma-modalidade').value = '';
   }
 }
 
-function seedAlunos() {
-  if (alunos.length === 0) {
-    alunos = [
-      { nome: "Ana Souza", idade: 23, foto: "perfil1.png", turma: "Boxe" },
-      { nome: "Carlos Silva", idade: 30, foto: "perfil2.png", turma: "CrossFit" },
-      { nome: "Beatriz Lima", idade: 28, foto: "perfil3.png", turma: "Muay Thai" },
-      { nome: "Lucas Costa", idade: 26, foto: "perfil4.png", turma: "Jiu-Jitsu" },
-      { nome: "Mariana Dias", idade: 22, foto: "perfil5.png", turma: "Funcional" }
-    ];
-    localStorage.setItem('alunos', JSON.stringify(alunos));
+function salvarAluno() {
+  const nome = document.getElementById('aluno-nome').value;
+  const idade = document.getElementById('aluno-idade').value;
+  const foto = document.getElementById('aluno-foto').value;
+  const turma = document.getElementById('aluno-turma').value;
+  if (nome && idade && foto && turma) {
+    alunos.push({ nome, idade, foto, turma });
+    alert('Aluno cadastrado!');
+    document.getElementById('aluno-nome').value = '';
+    document.getElementById('aluno-idade').value = '';
+    document.getElementById('aluno-foto').value = '';
   }
 }
 
-function login() {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-
-  if (!email || !password) {
-    alert('Por favor, preencha email e senha!');
-    return;
-  }
-
-  const user = users.find(u => u.email === email && u.password === password);
-  if (user) {
-    alert('Login realizado com sucesso!');
-    // Aqui você pode redirecionar para a página principal ou dashboard, ex:
-    // window.location.href = 'dashboard.html';
-  } else {
-    alert('Credenciais inválidas!');
-  }
+function atualizarSelectTurmas(selectId) {
+  const select = document.getElementById(selectId);
+  select.innerHTML = '';
+  turmas.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.nome;
+    opt.textContent = `${t.nome} (${t.modalidade})`;
+    select.appendChild(opt);
+  });
 }
 
-function register() {
-  const email = document.getElementById('register-email').value.trim();
-  const password = document.getElementById('register-password').value;
-  const confirmPassword = document.getElementById('register-confirm-password').value;
-
-  if (!email || !password || !confirmPassword) {
-    alert('Preencha todos os campos!');
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    alert('As senhas não coincidem!');
-    return;
-  }
-
-  const existingUser = users.find(u => u.email === email);
-  if (existingUser) {
-    alert('Este email já está cadastrado!');
-    return;
-  }
-
-  users.push({ email, password });
-  localStorage.setItem('users', JSON.stringify(users));
-
-  alert('Cadastro realizado com sucesso! Agora faça login.');
-  showLogin();
+function atualizarListaAlunos() {
+  const lista = document.getElementById('lista-alunos');
+  lista.innerHTML = '';
+  alunos.forEach(a => {
+    lista.innerHTML += `<div class='card'>
+      <img src='${a.foto}' class='profile-pic'>
+      <strong>${a.nome}</strong> | ${a.idade} anos | Turma: ${a.turma}
+    </div>`;
+  });
 }
 
-function showRegister() {
-  document.getElementById('login-card').style.display = 'none';
-  document.getElementById('register-card').style.display = 'block';
+function gerarRelatorio() {
+  const turma = document.getElementById('relatorio-turma').value;
+  const mes = document.getElementById('relatorio-mes').value;
+  const resultado = document.getElementById('relatorio-resultado');
+  resultado.innerHTML = `<h4>Relatório de ${mes}</h4>`;
+  const alunosTurma = alunos.filter(a => a.turma === turma);
+  alunosTurma.forEach(a => {
+    resultado.innerHTML += `<p>${a.nome} | ${a.idade} anos</p>`;
+  });
 }
 
-function showLogin() {
-  document.getElementById('register-card').style.display = 'none';
-  document.getElementById('login-card').style.display = 'block';
+function logout() {
+  alert('Saindo...');
 }
 
-window.onload = () => {
-  seedTurmas();
-  seedAlunos();
-  showLogin();
-};
+document.getElementById('welcome-user').textContent = 'Instrutor(a)';
+
+// Inicializa os selects ao abrir a página
+atualizarSelectTurmas('aluno-turma');
+atualizarSelectTurmas('relatorio-turma');
