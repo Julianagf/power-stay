@@ -8,8 +8,8 @@ function seedTurmas() {
       { nome: "Boxe", modalidade: "Luta" },
       { nome: "Muay Thai", modalidade: "Luta" },
       { nome: "Jiu-Jitsu", modalidade: "Luta" },
-      { nome: "CrossFit", modalidade: "Funcional" },
-      { nome: "Funcional", modalidade: "Funcional" }
+      { nome: "CrossFit", modalidade: "Treinamento Funcional" },
+      { nome: "Funcional", modalidade: "Treinamento Funcional" }
     ];
     localStorage.setItem('turmas', JSON.stringify(turmas));
   }
@@ -28,28 +28,65 @@ function seedAlunos() {
   }
 }
 
-function seedUsuarios() {
-  if (users.length === 0) {
-    users = [
-      { name: "Administrador", email: "admin@academia.com", password: "1234" }
-    ];
-    localStorage.setItem('users', JSON.stringify(users));
-  }
-}
-
 function login() {
-  const email = document.getElementById('login-email').value;
+  const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value;
+
+  if (!email || !password) {
+    alert('Por favor, preencha email e senha!');
+    return;
+  }
+
   const user = users.find(u => u.email === email && u.password === password);
   if (user) {
-    window.location.href = "dashboard.html";
+    alert('Login realizado com sucesso!');
+    // Aqui você pode redirecionar para a página principal ou dashboard, ex:
+    // window.location.href = 'dashboard.html';
   } else {
     alert('Credenciais inválidas!');
   }
 }
 
+function register() {
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  const confirmPassword = document.getElementById('register-confirm-password').value;
+
+  if (!email || !password || !confirmPassword) {
+    alert('Preencha todos os campos!');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert('As senhas não coincidem!');
+    return;
+  }
+
+  const existingUser = users.find(u => u.email === email);
+  if (existingUser) {
+    alert('Este email já está cadastrado!');
+    return;
+  }
+
+  users.push({ email, password });
+  localStorage.setItem('users', JSON.stringify(users));
+
+  alert('Cadastro realizado com sucesso! Agora faça login.');
+  showLogin();
+}
+
+function showRegister() {
+  document.getElementById('login-card').style.display = 'none';
+  document.getElementById('register-card').style.display = 'block';
+}
+
+function showLogin() {
+  document.getElementById('register-card').style.display = 'none';
+  document.getElementById('login-card').style.display = 'block';
+}
+
 window.onload = () => {
-  seedUsuarios();
   seedTurmas();
   seedAlunos();
-}
+  showLogin();
+};
