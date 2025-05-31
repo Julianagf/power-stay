@@ -1,146 +1,113 @@
-let users = JSON.parse(localStorage.getItem('users') || '[]');
-let alunos = JSON.parse(localStorage.getItem('alunos') || '[]');
-let turmas = JSON.parse(localStorage.getItem('turmas') || '[]');
-
-function showRegister() {
-  document.getElementById('login-screen').classList.add('hidden');
-  document.getElementById('register-screen').classList.remove('hidden');
-}
-
-function showLogin() {
-  document.getElementById('register-screen').classList.add('hidden');
-  document.getElementById('login-screen').classList.remove('hidden');
-}
-
-function register() {
-  const name = document.getElementById('register-name').value;
-  const email = document.getElementById('register-email').value;
-  const password = document.getElementById('register-password').value;
-  users.push({ name, email, password });
-  localStorage.setItem('users', JSON.stringify(users));
-  alert('Registrado com sucesso!');
-  showLogin();
-}
-
-function login() {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  const user = users.find(u => u.email === email && u.password === password);
-  if (user) {
-    localStorage.setItem('loggedUser', JSON.stringify(user));
-    showMenu(user.name);
-  } else {
-    alert('Credenciais inválidas!');
-  }
-}
-
-function showMenu(name) {
-  document.querySelectorAll('#app > div').forEach(el => el.classList.add('hidden'));
-  document.getElementById('menu-screen').classList.remove('hidden');
-  document.getElementById('welcome-user').innerText = `Olá, ${name}!`;
-}
-
-function logout() {
-  localStorage.removeItem('loggedUser');
-  location.reload();
-}
-
-function showRegistroFrequencia() {
-  document.querySelectorAll('#app > div').forEach(el => el.classList.add('hidden'));
-  document.getElementById('frequencia-screen').classList.remove('hidden');
-  renderAlunosFrequencia();
-}
-
-function renderAlunosFrequencia() {
-  const lista = document.getElementById('lista-alunos');
-  if (alunos.length === 0) {
-    lista.innerHTML = '<p>Sem alunos cadastrados.</p>';
-    return;
-  }
-  lista.innerHTML = alunos.map((a, i) => `
-    <div style="margin-bottom: 10px;">
-      <img src="${a.foto}" alt="${a.nome}" style="width:50px;height:50px;border-radius:50%;"><br>
-      <strong>${a.nome}</strong> (${a.idade} anos)<br>
-      <button onclick="marcarPresenca(${i}, true)">Frequente</button>
-      <button onclick="marcarPresenca(${i}, false)">Ausente</button>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>PowerStay - Sistema de Alunos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 60px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input, select {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      background: #4caf50;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="login-screen" class="container">
+      <h1>Login</h1>
+      <input type="email" id="login-email" placeholder="Email">
+      <input type="password" id="login-password" placeholder="Senha">
+      <button onclick="login()">Entrar</button>
+      <p>Não tem conta? <a href="#" onclick="showRegister()">Cadastre-se</a></p>
     </div>
-  `).join('');
-}
 
-function marcarPresenca(index, presente) {
-  if (!alunos[index].frequencias) alunos[index].frequencias = [];
-  alunos[index].frequencias.push({ data: new Date().toISOString().split('T')[0], presente });
-  localStorage.setItem('alunos', JSON.stringify(alunos));
-  alert(`${alunos[index].nome} marcado como ${presente ? 'Frequente' : 'Ausente'}.`);
-}
+    <div id="register-screen" class="container hidden">
+      <h1>Cadastro</h1>
+      <input type="text" id="register-name" placeholder="Nome">
+      <input type="email" id="register-email" placeholder="Email">
+      <input type="password" id="register-password" placeholder="Senha">
+      <button onclick="register()">Registrar</button>
+      <p>Já tem conta? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
 
-function showCadastrarTurma() {
-  document.querySelectorAll('#app > div').forEach(el => el.classList.add('hidden'));
-  document.getElementById('cadastrar-turma-screen').classList.remove('hidden');
-}
+    <div id="menu-screen" class="container hidden">
+      <h1 id="welcome-user"></h1>
+      <button onclick="showRegistroFrequencia()">Registro de Frequência</button>
+      <button onclick="showCadastrarTurma()">Cadastrar Turma</button>
+      <button onclick="showCadastrarAluno()">Cadastrar Aluno</button>
+      <button onclick="showRelatorioMensal()">Relatório Mensal</button>
+      <button onclick="logout()">Sair</button>
+    </div>
 
-function salvarTurma() {
-  const nome = document.getElementById('turma-nome').value;
-  const modalidade = document.getElementById('turma-modalidade').value;
-  if (!nome || !modalidade) return alert('Preencha todos os campos!');
-  turmas.push({ nome, modalidade });
-  localStorage.setItem('turmas', JSON.stringify(turmas));
-  atualizarSelectTurmas();
-  alert('Turma cadastrada!');
-  voltarMenu();
-}
+    <div id="frequencia-screen" class="container hidden">
+      <h1>Registro de Frequência</h1>
+      <div id="lista-alunos"></div>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
 
-function showCadastrarAluno() {
-  document.querySelectorAll('#app > div').forEach(el => el.classList.add('hidden'));
-  document.getElementById('cadastrar-aluno-screen').classList.remove('hidden');
-  atualizarSelectTurmas();
-}
+    <div id="cadastrar-turma-screen" class="container hidden">
+      <h1>Cadastrar Turma</h1>
+      <input id="turma-nome" placeholder="Nome da Turma">
+      <input id="turma-modalidade" placeholder="Modalidade">
+      <button onclick="salvarTurma()">Salvar Turma</button>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
 
-function salvarAluno() {
-  const nome = document.getElementById('aluno-nome').value;
-  const idade = document.getElementById('aluno-idade').value;
-  const foto = document.getElementById('aluno-foto').value;
-  const turma = document.getElementById('aluno-turma').value;
-  if (!nome || !idade || !foto || !turma) return alert('Preencha todos os campos!');
-  alunos.push({ nome, idade, foto, turma });
-  localStorage.setItem('alunos', JSON.stringify(alunos));
-  alert('Aluno cadastrado!');
-  voltarMenu();
-}
+    <div id="cadastrar-aluno-screen" class="container hidden">
+      <h1>Cadastrar Aluno</h1>
+      <input id="aluno-nome" placeholder="Nome do Aluno">
+      <input id="aluno-idade" placeholder="Idade">
+      <input id="aluno-foto" placeholder="URL da Foto">
+      <select id="aluno-turma"></select>
+      <button onclick="salvarAluno()">Salvar Aluno</button>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
 
-function showRelatorioMensal() {
-  document.querySelectorAll('#app > div').forEach(el => el.classList.add('hidden'));
-  document.getElementById('relatorio-screen').classList.remove('hidden');
-  atualizarSelectTurmas();
-}
+    <div id="relatorio-screen" class="container hidden">
+      <h1>Relatório Mensal</h1>
+      <input id="relatorio-mes" type="month">
+      <select id="relatorio-turma"></select>
+      <button onclick="gerarRelatorio()">Gerar</button>
+      <div id="relatorio-resultado" style="margin-top:15px"></div>
+      <button onclick="voltarMenu()">Voltar</button>
+    </div>
+  </div>
 
-function gerarRelatorio() {
-  const mes = document.getElementById('relatorio-mes').value;
-  const turma = document.getElementById('relatorio-turma').value;
-  if (!mes || !turma) return alert('Selecione mês e turma!');
-
-  const resultado = alunos.filter(a => a.turma === turma).map(a => {
-    const freq = a.frequencias?.filter(f => f.data.startsWith(mes)).length || 0;
-    return `${a.nome}: ${freq} presença(s)`;
-  }).join('<br>');
-
-  document.getElementById('relatorio-resultado').innerHTML = resultado || 'Nenhum aluno ou frequência encontrada.';
-}
-
-function atualizarSelectTurmas() {
-  const selects = document.querySelectorAll('#aluno-turma, #relatorio-turma');
-  selects.forEach(sel => {
-    sel.innerHTML = '<option value="">Selecione a turma</option>' +
-      turmas.map(t => `<option value="${t.nome}">${t.nome}</option>`).join('');
-  });
-}
-
-function voltarMenu() {
-  showMenu(JSON.parse(localStorage.getItem('loggedUser')).name);
-}
-
-window.onload = () => {
-  const logged = JSON.parse(localStorage.getItem('loggedUser'));
-  if (logged) showMenu(logged.name);
-  atualizarSelectTurmas();
-}
+  <script src="script.js"></script>
+</body>
+</html>
