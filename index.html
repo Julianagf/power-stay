@@ -1,63 +1,507 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>PowerStay - Sistema</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PowerStay - Controle de Frequência e Análise de Risco</title>
+<style>
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin:0;
+    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  #app {
+    background: rgba(255 255 255 / 0.12);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    padding: 30px 35px;
+    box-shadow: 0 8px 24px rgba(104 77 202 / 0.3);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255 255 255 / 0.2);
+    user-select: none;
+  }
+  #logo {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    margin-bottom: 28px;
+    color: #fff;
+    font-style: italic;
+    text-shadow: 3px 3px 10px rgba(255 255 255 / 0.8);
+    font-family: 'Segoe UI Black', 'Arial Black', Arial, sans-serif;
+    text-align: center;
+  }
+  h2 {
+    font-weight: 700;
+    margin-bottom: 24px;
+    text-transform: uppercase;
+    color: #dfe6e9cc;
+    letter-spacing: 1.6px;
+  }
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #e0e0e0dd;
+    font-size: 14px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  select {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255 255 255 / 0.2);
+    color: white;
+    font-size: 15px;
+    transition: box-shadow 0.3s ease;
+  }
+  input::placeholder {
+    color: #ddd;
+  }
+  input:focus, select:focus {
+    outline: none;
+    box-shadow: 0 0 12px #a29bfecc;
+    background: rgba(255 255 255 / 0.35);
+  }
+  button {
+    background-color: #6c5ce7;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #5846c9;
+  }
+  .link-toggle {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: #dfe6e9cc;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: underline;
+  }
+  .error {
+    color: #ff6f61;
+    font-weight: 700;
+    margin-bottom: 14px;
+    font-size: 14px;
+    text-align: center;
+    user-select: text;
+  }
+  .success {
+    color: #55efc4;
+    font-weight: 700;
+    margin-bottom: 14px;
+    font-size: 14px;
+    text-align: center;
+    user-select: text;
+  }
+  #attendance-section, #risk-section {
+    margin-top: 25px;
+  }
+  #welcome-msg {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #dfe6e9dd;
+    user-select: text;
+  }
+  ul#attendance-list {
+    max-height: 180px;
+    overflow-y: auto;
+    list-style: none;
+    padding-left: 14px;
+    border-radius: 10px;
+    background: rgba(0 0 0 / 0.2);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    font-size: 14px;
+    color: #dfe6e9dd;
+    user-select: text;
+    margin-bottom: 16px;
+  }
+  ul#attendance-list li {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255 255 255 / 0.15);
+  }
+  ul#attendance-list li:last-child {
+    border-bottom: none;
+  }
+  #risk-message {
+    font-weight: 700;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 12px;
+    border-radius: 12px;
+    padding: 12px;
+    user-select: text;
+  }
+  #risk-message.low {
+    color: #00b894;
+    background: rgba(0, 184, 148, 0.15);
+  }
+  #risk-message.medium {
+    color: #e1b12c;
+    background: rgba(225, 177, 44, 0.15);
+  }
+  #risk-message.high {
+    color: #d63031;
+    background: rgba(214, 48, 49, 0.15);
+  }
+  #btn-logout {
+    background-color: #d63031;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 30px;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  #btn-logout:hover {
+    background-color: #b72828;
+  }
+</style>
+<title>PowerStay - Academia</title>
 </head>
 <body>
+<div id="app" role="main" aria-label="Aplicação PowerStay Controle de Frequência e Risco">
+  <div id="logo" aria-label="Logomarca PowerStay" style="font-size:48px; font-weight:900; text-align:center; margin-bottom:25px;">PowerStay</div>
+  <div id="login-register-section">
+    <form id="login-form" aria-label="Formulário de Login" style="max-width: 400px; margin: 0 auto;">
+      <h2>Entrar</h2>
+      <div id="login-error" class="error" role="alert" aria-live="assertive"></div>
+      <label for="login-email">E-mail</label>
+      <input type="email" id="login-email" placeholder="email@exemplo.com" required autocomplete="username" />
+      <label for="login-password">Senha</label>
+      <input type="password" id="login-password" placeholder="Senha" required autocomplete="current-password" />
+      <button type="submit">Entrar</button>
+      <div id="to-register" class="link-toggle" tabindex="0" role="button" aria-label="Ir para Registro">Não tem conta? Registre-se</div>
+    </form>
 
-<div class="sidebar">
-  <h2>PowerStay</h2>
-  <button onclick="showMenu()"><i class="fa fa-home"></i> Início</button>
-  <button onclick="showRegistroFrequencia()"><i class="fa fa-calendar-check"></i> Registro de Frequência</button>
-  <button onclick="showCadastrarTurma()"><i class="fa fa-users"></i> Cadastrar Turma</button>
-  <button onclick="showCadastrarAluno()"><i class="fa fa-user-plus"></i> Cadastrar Aluno</button>
-  <button onclick="showRelatorioMensal()"><i class="fa fa-file-alt"></i> Relatório Mensal</button>
-  <button onclick="logout()"><i class="fa fa-sign-out-alt"></i> Sair</button>
+    <form id="register-form" aria-label="Formulário de Registro" style="display:none; max-width: 400px; margin: 0 auto;">
+      <h2>Registrar</h2>
+      <div id="register-error" class="error" role="alert" aria-live="assertive"></div>
+      <div id="register-success" class="success" aria-live="polite"></div>
+      <label for="reg-name">Nome completo</label>
+      <input type="text" id="reg-name" placeholder="Seu nome" required autocomplete="name" />
+      <label for="reg-email">E-mail</label>
+      <input type="email" id="reg-email" placeholder="email@exemplo.com" required autocomplete="email" />
+      <label for="reg-password">Senha</label>
+      <input type="password" id="reg-password" placeholder="Senha segura" required autocomplete="new-password" />
+      <button type="submit">Registrar</button>
+      <div id="to-login" class="link-toggle" tabindex="0" role="button" aria-label="Ir para Login">Já tem conta? Faça o login</div>
+    </form>
+  </div>
+
+  <div id="main-section" style="display:none; max-width: 480px; margin: 0 auto;">
+    <div id="welcome-msg" style="font-weight:700; font-size:20px; margin-bottom:25px; text-align:center;"></div>
+    <button id="btn-logout" aria-label="Sair da aplicação">Sair</button>
+
+    <section id="attendance-section">
+      <h2>Registrar Frequência</h2>
+      <button id="btn-register-attendance" style="background-color:#00b894; color:white; font-weight:700; width:100%; padding:14px; border:none; border-radius:12px; font-size:17px; user-select:none; cursor:pointer; margin-bottom:20px;">Registrar Presença</button>
+      <ul id="attendance-list" aria-label="Lista de presenças registradas"></ul>
+    </section>
+
+    <section id="risk-section" style="margin-top:35px;">
+      <h2>Questionário de Saúde e Cancelamento</h2>
+      <form id="risk-form" aria-label="Formulário para avaliação de risco de desistência">
+        <label>Possui problemas cardíacos?</label>
+        <select id="cardiac-problems" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="sim">Sim</option>
+          <option value="nao">Não</option>
+        </select>
+
+        <label>Frequência semanal na academia?</label>
+        <input type="number" id="weekly-frequency" min="0" max="7" placeholder="Ex: 3" required/>
+
+        <label>Já desistiu ou cancelou matrícula antes?</label>
+        <select id="prior-cancellation" required>
+          <option value="" disabled selected>Selecione</option>
+          <option value="sim">Sim</option>
+          <option value="nao">Não</option>
+        </select>
+
+        <label>Há outras condições médicas relevantes? (opcional)</label>
+        <input type="text" id="other-conditions" placeholder="Descreva se houver" />
+
+        <button type="submit" style="background-color:#6c5ce7; margin-top:15px;">Calcular risco de cancelamento</button>
+      </form>
+      <div id="risk-message" role="alert" aria-live="polite"></div>
+    </section>
+  </div>
 </div>
 
-<div class="header">
-  <h3 id="header-title">Bem-vindo ao PowerStay</h3>
-</div>
+<script>
+  // Persistência localStorage usuários e sessão
+  function getUsers() {
+    const data = localStorage.getItem('users');
+    return data ? JSON.parse(data) : [];
+  }
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+  function setLoggedUser(user) {
+    localStorage.setItem('loggedUser', JSON.stringify(user));
+  }
+  function getLoggedUser() {
+    const data = localStorage.getItem('loggedUser');
+    return data ? JSON.parse(data) : null;
+  }
+  function clearLoggedUser() {
+    localStorage.removeItem('loggedUser');
+  }
 
-<div class="main" id="app">
-  <div id="menu-screen" class="card">
-    <h2>Início</h2>
-    <p>Bem-vindo, <span id="welcome-user"></span>!</p>
-  </div>
+  // Frequência
+  function getAttendance(email) {
+    const data = localStorage.getItem('attendance_' + email);
+    return data ? JSON.parse(data) : [];
+  }
+  function saveAttendance(email, attendance) {
+    localStorage.setItem('attendance_' + email, JSON.stringify(attendance));
+  }
 
-  <div id="frequencia-screen" class="card hidden">
-    <h2>Registro de Frequência</h2>
-    <div id="lista-alunos"></div>
-  </div>
+  // Exibe lista presença
+  function renderAttendance(email) {
+    const list = document.getElementById('attendance-list');
+    const attendance = getAttendance(email);
+    list.innerHTML = '';
+    if(attendance.length === 0){
+      list.innerHTML = '<li>Sem registros de presença.</li>';
+      return;
+    }
+    attendance.forEach(item=>{
+      const li = document.createElement('li');
+      li.textContent = item;
+      list.appendChild(li);
+    });
+  }
 
-  <div id="cadastrar-turma-screen" class="card hidden">
-    <h2>Cadastrar Nova Turma</h2>
-    <input type="text" id="turma-nome" placeholder="Nome da Turma"><br><br>
-    <input type="text" id="turma-modalidade" placeholder="Modalidade"><br><br>
-    <button class="primary" onclick="salvarTurma()">Salvar Turma</button>
-  </div>
+  // Alternar visibilidade
+  function showLoginRegister(show) {
+    document.getElementById('login-register-section').style.display = show ? 'block' : 'none';
+    document.getElementById('main-section').style.display = show ? 'none' : 'block';
+  }
 
-  <div id="cadastrar-aluno-screen" class="card hidden">
-    <h2>Cadastrar Novo Aluno</h2>
-    <input type="text" id="aluno-nome" placeholder="Nome do Aluno"><br><br>
-    <input type="number" id="aluno-idade" placeholder="Idade"><br><br>
-    <input type="text" id="aluno-foto" placeholder="URL da Foto"><br><br>
-    <select id="aluno-turma"></select><br><br>
-    <button class="primary" onclick="salvarAluno()">Salvar Aluno</button>
-  </div>
+  // Validações simples
+  function validateEmail(email) {
+    return email.includes('@');
+  }
 
-  <div id="relatorio-screen" class="card hidden">
-    <h2>Relatório Mensal</h2>
-    <input type="month" id="relatorio-mes"><br><br>
-    <select id="relatorio-turma"></select><br><br>
-    <button class="primary" onclick="gerarRelatorio()">Gerar Relatório</button>
-    <div id="relatorio-resultado" style="margin-top: 20px;"></div>
-  </div>
-</div>
+  document.getElementById('to-register').addEventListener('click', function(){ toggleForms('register'); });
+  document.getElementById('to-login').addEventListener('click', function(){ toggleForms('login'); });
 
-<script src="scripts.js"></script>
+  document.getElementById('to-register').addEventListener('keypress', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleForms('register'); } });
+  document.getElementById('to-login').addEventListener('keypress', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleForms('login'); } });
+
+  function toggleForms(form){
+    const regForm = document.getElementById('register-form');
+    const loginForm = document.getElementById('login-form');
+    const regError = document.getElementById('register-error');
+    const regSuccess = document.getElementById('register-success');
+    const loginError = document.getElementById('login-error');
+
+    regError.textContent = '';
+    regSuccess.textContent = '';
+    loginError.textContent = '';
+
+    if(form === 'register'){
+      regForm.style.display = 'block';
+      loginForm.style.display = 'none';
+    } else {
+      regForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    }
+  }
+
+  // Registro
+  document.getElementById('register-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim().toLowerCase();
+    const password = document.getElementById('reg-password').value;
+    const regError = document.getElementById('register-error');
+    const regSuccess = document.getElementById('register-success');
+    regError.textContent = '';
+    regSuccess.textContent = '';
+
+    if(!name || !email || !password){
+      regError.textContent = 'Todos os campos são obrigatórios.';
+      return;
+    }
+    if(!validateEmail(email)){
+      regError.textContent = 'Digite um e-mail válido.';
+      return;
+    }
+    if(password.length < 6){
+      regError.textContent = 'Senha deve ter ao menos 6 caracteres.';
+      return;
+    }
+
+    const users = getUsers();
+    if(users.some(u=>u.email===email)){
+      regError.textContent = 'Este e-mail já está cadastrado.';
+      return;
+    }
+    users.push({name,email,password});
+    saveUsers(users);
+    regSuccess.textContent = 'Cadastro realizado com sucesso! Faça login.';
+    this.reset();
+    setTimeout(()=>toggleForms('login'), 1800);
+  });
+
+  // Login
+  document.getElementById('login-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value;
+    const loginError = document.getElementById('login-error');
+    loginError.textContent = '';
+
+    if(!email || !password){
+      loginError.textContent = 'E-mail e senha são necessários.';
+      return;
+    }
+    if(!validateEmail(email)){
+      loginError.textContent = 'Digite um e-mail válido.';
+      return;
+    }
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === password);
+    if(!user){
+      loginError.textContent = 'E-mail ou senha incorretos.';
+      return;
+    }
+    setLoggedUser(user);
+    initializeMainView();
+  });
+
+  // Inicializa a visualização principal após login
+  function initializeMainView(){
+    const user = getLoggedUser();
+    if(!user) {
+      showLoginRegister(true);
+      return;
+    }
+    showLoginRegister(false);
+    const welcomeMsg = document.getElementById('welcome-msg');
+    welcomeMsg.textContent = `Bem-vindo(a), ${user.name}!`;
+    renderAttendance(user.email);
+    resetRiskFormAndMessage();
+  }
+
+  // Logout
+  document.getElementById('btn-logout').addEventListener('click', ()=>{
+    clearLoggedUser();
+    toggleForms('login');
+    showLoginRegister(true);
+  });
+
+  // Registrar frequência
+  document.getElementById('btn-register-attendance').addEventListener('click', ()=>{
+    const user = getLoggedUser();
+    if(!user) return;
+    const attendance = getAttendance(user.email);
+    const now = new Date();
+    const formatted = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+    attendance.unshift(formatted);
+    saveAttendance(user.email, attendance);
+    renderAttendance(user.email);
+  });
+
+  // Avaliação de risco
+  document.getElementById('risk-form').addEventListener('submit', e=>{
+    e.preventDefault();
+
+    const cardiacProblems = document.getElementById('cardiac-problems').value;
+    const weeklyFrequency = parseInt(document.getElementById('weekly-frequency').value,10);
+    const priorCancellation = document.getElementById('prior-cancellation').value;
+    const otherConditions = document.getElementById('other-conditions').value.trim();
+
+    const riskMsgDiv = document.getElementById('risk-message');
+    riskMsgDiv.textContent = '';
+    riskMsgDiv.className = '';
+
+    // Regras simples para risco
+    let riskLevel = 'baixo';
+
+    // Define peso para fatores
+    let score = 0;
+    if(cardiacProblems === 'sim') score += 3;
+    if(priorCancellation === 'sim') score += 2;
+    if(weeklyFrequency < 2) score += 2;
+    if(otherConditions.length > 0) score += 1;
+
+    // Determina risco
+    if(score >= 5){
+      riskLevel = 'alto';
+    }
+    else if(score >= 3){
+      riskLevel = 'medio';
+    }
+
+    let message = '';
+    if(riskLevel === 'alto'){
+      message = 'Alto risco de desistência. Recomendamos acompanhamento médico e atenção especial.';
+    } else if(riskLevel === 'medio'){
+      message = 'Risco médio de desistência. Considere suporte e monitoramento frequente.';
+    } else {
+      message = 'Baixo risco de desistência. Continue com sua rotina!';
+    }
+
+    riskMsgDiv.textContent = message;
+    riskMsgDiv.classList.add(riskLevel);
+  });
+
+  function resetRiskFormAndMessage(){
+    document.getElementById('risk-form').reset();
+    const riskMsgDiv = document.getElementById('risk-message');
+    riskMsgDiv.textContent = '';
+    riskMsgDiv.className = '';
+  }
+
+  // Ao carregar página, já verifica login e mostra tela correta
+  window.addEventListener('load', ()=>{
+    const user = getLoggedUser();
+    if(user){
+      initializeMainView();
+    } else {
+      showLoginRegister(true);
+      toggleForms('login');
+    }
+  });
+</script>
 </body>
 </html>
+
