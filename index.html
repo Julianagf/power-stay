@@ -3,57 +3,70 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>PowerStay - Controle de Frequência e Análise de Risco</title>
+<title>PowerStay - Controle de Frequência e Risco</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
   *, *::before, *::after {
     box-sizing: border-box;
   }
   body {
     margin:0;
     font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: #f0f0f0;
+    background: linear-gradient(145deg, #FFDEE9, #B5FFFC);
+    color: #330033;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 25px;
+    overflow-y: auto;
   }
   #app {
-    background: rgba(255 255 255 / 0.12);
-    border-radius: 16px;
+    background: rgba(255 182 193 / 0.15);
+    border-radius: 20px;
     width: 100%;
-    max-width: 480px;
-    padding: 30px 35px;
-    box-shadow: 0 8px 24px rgba(104 77 202 / 0.3);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255 255 255 / 0.2);
+    max-width: 560px;
+    padding: 35px 40px 40px 40px;
+    box-shadow:
+      0 4px 20px rgba(255 105 180 / 0.6),
+      inset 0 0 60px rgba(255 182 193 / 0.5);
+    backdrop-filter: blur(16px);
+    border: 2px solid rgba(255 105 180 / 0.7);
     user-select: none;
+    position: relative;
   }
   #logo {
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 900;
-    letter-spacing: 4px;
-    margin-bottom: 28px;
-    color: #fff;
+    letter-spacing: 5px;
+    margin-bottom: 35px;
+    color: #660066;
     font-style: italic;
-    text-shadow: 3px 3px 10px rgba(255 255 255 / 0.8);
+    text-shadow:
+      0 0 10px #ff69b4,
+      0 0 25px #ff1493;
     font-family: 'Segoe UI Black', 'Arial Black', Arial, sans-serif;
     text-align: center;
+    user-select: none;
+  }
+  .hidden {
+    display: none !important;
   }
   h2 {
     font-weight: 700;
-    margin-bottom: 24px;
+    margin-bottom: 26px;
     text-transform: uppercase;
-    color: #dfe6e9cc;
-    letter-spacing: 1.6px;
+    color: #660066dd;
+    letter-spacing: 2.2px;
+    text-shadow: 0 0 5px rgba(102,0,102,0.6);
   }
   label {
     display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #e0e0e0dd;
-    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #551a55cc;
+    font-size: 15px;
+    transition: color 0.3s;
   }
   input[type="text"],
   input[type="email"],
@@ -61,143 +74,226 @@
   input[type="number"],
   select {
     width: 100%;
-    padding: 10px 14px;
-    margin-bottom: 16px;
-    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 14px;
     border: none;
-    background: rgba(255 255 255 / 0.2);
-    color: white;
-    font-size: 15px;
-    transition: box-shadow 0.3s ease;
+    background: rgba(255 182 193 / 0.38);
+    color: #4b004b;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow:
+      inset 2px 2px 8px rgba(255 105 180 / 0.5),
+      inset -2px -2px 8px rgba(255 20 147 / 0.3);
+    transition:
+      box-shadow 0.4s ease,
+      background-color 0.4s ease,
+      color 0.4s ease;
   }
   input::placeholder {
-    color: #ddd;
+    color: #c364c3cc;
+    font-weight: 500;
+    font-style: italic;
   }
   input:focus, select:focus {
     outline: none;
-    box-shadow: 0 0 12px #a29bfecc;
-    background: rgba(255 255 255 / 0.35);
+    box-shadow:
+      0 0 18px #ff1493,
+      inset 3px 3px 20px #ff69b4;
+    background-color: #ffe0f0;
+    color: #660066;
   }
   button {
-    background-color: #6c5ce7;
+    background: linear-gradient(135deg, #ff5ca1, #da1884);
     border: none;
     color: white;
-    font-weight: 700;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 17px;
+    font-weight: 900;
+    padding: 16px;
+    border-radius: 18px;
+    font-size: 18px;
     cursor: pointer;
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     user-select: none;
-    transition: background-color 0.3s ease;
+    box-shadow:
+      0 8px 15px rgba(218 24 132 / 0.8);
+    transition:
+      background 0.4s ease,
+      box-shadow 0.4s ease,
+      transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
   }
   button:hover {
-    background-color: #5846c9;
+    background: linear-gradient(135deg, #da1884, #ff5ca1);
+    box-shadow:
+      0 15px 25px rgba(218 24 132 / 0.9);
+    transform: translateY(-4px);
+  }
+  button:active {
+    transform: translateY(-1px);
   }
   .link-toggle {
-    margin-top: 12px;
+    margin-top: 14px;
     text-align: center;
-    font-size: 14px;
-    color: #dfe6e9cc;
+    font-size: 15px;
+    color: #7f307fdd;
     cursor: pointer;
     user-select: none;
     text-decoration: underline;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    transition: color 0.3s;
+  }
+  .link-toggle:hover {
+    color: #b859b8dd;
   }
   .error {
-    color: #ff6f61;
-    font-weight: 700;
-    margin-bottom: 14px;
-    font-size: 14px;
+    color: #d91e63;
+    font-weight: 900;
+    margin-bottom: 16px;
+    font-size: 15px;
     text-align: center;
     user-select: text;
+    text-shadow: 0 0 3px #d91e63a2;
+    animation: shake 0.35s ease 1;
   }
   .success {
-    color: #55efc4;
-    font-weight: 700;
-    margin-bottom: 14px;
-    font-size: 14px;
+    color: #ff4081;
+    font-weight: 900;
+    margin-bottom: 16px;
+    font-size: 15px;
     text-align: center;
     user-select: text;
+    text-shadow: 0 0 8px #ff4081bb;
+    animation: pulse 1.8s infinite alternate;
   }
   #attendance-section, #risk-section {
-    margin-top: 25px;
+    margin-top: 10px;
   }
   #welcome-msg {
-    font-weight: 700;
-    font-size: 20px;
-    margin-bottom: 25px;
+    font-weight: 900;
+    font-size: 24px;
+    margin-bottom: 26px;
     text-align: center;
-    color: #dfe6e9dd;
+    color: #5c005cdd;
+    text-shadow: 0 0 12px rgba(92,0,92,0.7);
     user-select: text;
   }
   ul#attendance-list {
-    max-height: 180px;
+    max-height: 200px;
     overflow-y: auto;
     list-style: none;
-    padding-left: 14px;
-    border-radius: 10px;
-    background: rgba(0 0 0 / 0.2);
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
-    font-weight: 600;
-    font-size: 14px;
-    color: #dfe6e9dd;
+    padding-left: 16px;
+    border-radius: 12px;
+    background: rgba(255 182 193 / 0.3);
+    box-shadow: inset 0 0 15px rgba(255 20 147,0.55);
+    font-weight: 700;
+    font-size: 15px;
+    color: #660066dd;
     user-select: text;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
   ul#attendance-list li {
-    padding: 10px 12px;
-    border-bottom: 1px solid rgba(255 255 255 / 0.15);
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255 20 147 / 0.4);
   }
   ul#attendance-list li:last-child {
     border-bottom: none;
   }
   #risk-message {
-    font-weight: 700;
-    font-size: 18px;
+    font-weight: 800;
+    font-size: 20px;
     text-align: center;
-    margin-top: 12px;
-    border-radius: 12px;
-    padding: 12px;
+    margin-top: 20px;
+    border-radius: 14px;
+    padding: 16px 18px;
     user-select: text;
+    box-shadow: 0 0 20px inset;
   }
   #risk-message.low {
     color: #00b894;
     background: rgba(0, 184, 148, 0.15);
+    box-shadow: 0 0 25px 10px rgba(0, 184, 148, 0.3) inset;
   }
   #risk-message.medium {
     color: #e1b12c;
     background: rgba(225, 177, 44, 0.15);
+    box-shadow: 0 0 25px 10px rgba(225, 177, 44, 0.3) inset;
   }
   #risk-message.high {
     color: #d63031;
     background: rgba(214, 48, 49, 0.15);
+    box-shadow: 0 0 25px 10px rgba(214, 48, 49, 0.3) inset;
   }
   #btn-logout {
-    background-color: #d63031;
+    background-color: #b20f5e;
     color: white;
     border: none;
     padding: 14px;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 700;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 900;
     cursor: pointer;
     width: 100%;
     margin-bottom: 30px;
     user-select: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    box-shadow:
+      0 6px 16px rgba(178,15,94,0.7);
   }
   #btn-logout:hover {
-    background-color: #b72828;
+    background-color: #8e0c4a;
+    box-shadow:
+      0 10px 25px rgba(178,15,94,0.9);
+  }
+  /* Abas estilo */
+  .tabs {
+    display: flex;
+    margin-bottom: 25px;
+    gap: 16px;
+    justify-content: center;
+    user-select: none;
+  }
+  .tab-button {
+    background: rgba(255 105 180 / 0.26);
+    border: none;
+    color: #a900a9cc;
+    padding: 14px 26px;
+    border-radius: 22px;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 17px;
+    transition: background-color 0.35s ease, color 0.35s ease;
+  }
+  .tab-button[aria-selected="true"] {
+    background: #FF69B4;
+    box-shadow:
+      0 0 20px #ff69b4cc,
+      0 0 40px #ff1493cc;
+    color: white;
+    cursor: default;
+  }
+  .tab-button:hover:not([aria-selected="true"]) {
+    background: rgba(255 105 180 / 0.5);
+  }
+  /* Animações */
+  @keyframes shake {
+    0%, 100% {transform: translateX(0);}
+    20%, 60% {transform: translateX(-6px);}
+    40%, 80% {transform: translateX(6px);}
+  }
+  @keyframes pulse {
+    0% {opacity: 1;}
+    100% {opacity: 0.7;}
   }
 </style>
-<title>PowerStay - Academia</title>
 </head>
 <body>
 <div id="app" role="main" aria-label="Aplicação PowerStay Controle de Frequência e Risco">
-  <div id="logo" aria-label="Logomarca PowerStay" style="font-size:48px; font-weight:900; text-align:center; margin-bottom:25px;">PowerStay</div>
+  <div id="logo" aria-label="Logomarca PowerStay">PowerStay</div>
   <div id="login-register-section">
-    <form id="login-form" aria-label="Formulário de Login" style="max-width: 400px; margin: 0 auto;">
+    <form id="login-form" aria-label="Formulário de Login" style="max-width: 480px; margin: 0 auto;">
       <h2>Entrar</h2>
       <div id="login-error" class="error" role="alert" aria-live="assertive"></div>
       <label for="login-email">E-mail</label>
@@ -208,7 +304,7 @@
       <div id="to-register" class="link-toggle" tabindex="0" role="button" aria-label="Ir para Registro">Não tem conta? Registre-se</div>
     </form>
 
-    <form id="register-form" aria-label="Formulário de Registro" style="display:none; max-width: 400px; margin: 0 auto;">
+    <form id="register-form" aria-label="Formulário de Registro" style="display:none; max-width: 480px; margin: 0 auto;">
       <h2>Registrar</h2>
       <div id="register-error" class="error" role="alert" aria-live="assertive"></div>
       <div id="register-success" class="success" aria-live="polite"></div>
@@ -223,17 +319,23 @@
     </form>
   </div>
 
-  <div id="main-section" style="display:none; max-width: 480px; margin: 0 auto;">
-    <div id="welcome-msg" style="font-weight:700; font-size:20px; margin-bottom:25px; text-align:center;"></div>
+  <div id="main-section" class="hidden" style="max-width: 520px; margin: 0 auto;">
+    <div id="welcome-msg" style="font-weight:900; font-size:24px; margin-bottom:30px; text-align:center;"></div>
     <button id="btn-logout" aria-label="Sair da aplicação">Sair</button>
 
-    <section id="attendance-section">
+    <nav class="tabs" role="tablist" aria-label="Navegação entre frequência e avaliação de risco">
+      <button id="tab-attendance" class="tab-button" role="tab" aria-selected="true" aria-controls="attendance-section" tabindex="0">Frequência</button>
+      <button id="tab-risk" class="tab-button" role="tab" aria-selected="false" aria-controls="risk-section" tabindex="-1">Avaliação de Risco</button>
+      <button id="tab-spreadsheet" class="tab-button" role="tab" aria-selected="false" aria-controls="spreadsheet-section" tabindex="-1">Planilha</button>
+    </nav>
+
+    <section id="attendance-section" role="tabpanel" tabindex="0" aria-labelledby="tab-attendance">
       <h2>Registrar Frequência</h2>
-      <button id="btn-register-attendance" style="background-color:#00b894; color:white; font-weight:700; width:100%; padding:14px; border:none; border-radius:12px; font-size:17px; user-select:none; cursor:pointer; margin-bottom:20px;">Registrar Presença</button>
+      <button id="btn-register-attendance" style="background-color:#ff6fc1; color:white; font-weight:900; width:100%; padding:16px; border:none; border-radius:20px; font-size:18px; user-select:none; cursor:pointer; margin-bottom:28px; box-shadow: 0 0 12px #ff6fc1;">Registrar Presença</button>
       <ul id="attendance-list" aria-label="Lista de presenças registradas"></ul>
     </section>
 
-    <section id="risk-section" style="margin-top:35px;">
+    <section id="risk-section" role="tabpanel" tabindex="0" aria-labelledby="tab-risk" class="hidden" style="margin-top:30px;">
       <h2>Questionário de Saúde e Cancelamento</h2>
       <form id="risk-form" aria-label="Formulário para avaliação de risco de desistência">
         <label>Possui problemas cardíacos?</label>
@@ -244,7 +346,7 @@
         </select>
 
         <label>Frequência semanal na academia?</label>
-        <input type="number" id="weekly-frequency" min="0" max="7" placeholder="Ex: 3" required/>
+        <input type="number" id="weekly-frequency" min="0" max="7" placeholder="Ex: 3" required />
 
         <label>Já desistiu ou cancelou matrícula antes?</label>
         <select id="prior-cancellation" required>
@@ -254,151 +356,143 @@
         </select>
 
         <label>Há outras condições médicas relevantes? (opcional)</label>
-        <input type="text" id="other-conditions" placeholder="Descreva se houver" />
+        <input type="text" id="other-conditions" placeholder="Descreva se houver" autocomplete="off" />
 
-        <button type="submit" style="background-color:#6c5ce7; margin-top:15px;">Calcular risco de cancelamento</button>
+        <button type="submit" style="background-color:#d13c97; margin-top:20px;">Calcular risco de cancelamento</button>
       </form>
       <div id="risk-message" role="alert" aria-live="polite"></div>
+    </section>
+
+    <section id="spreadsheet-section" role="tabpanel" tabindex="0" aria-labelledby="tab-spreadsheet" class="hidden" style="margin-top:30px;">
+      <h2>Planilha de Frequência dos Alunos</h2>
+      <table id="spreadsheet-table" style="width: 100%; border-collapse: collapse; box-shadow: 0 0 25px #ffb6c1cc; border-radius: 12px; overflow: hidden; user-select:none;">
+        <thead>
+          <tr style="background: #ff6fc1cc; color: white; font-weight: 900; font-size: 15px;">
+            <th style="padding: 12px; border-bottom: 2px solid #fff;">Aluno</th>
+            <th style="padding: 12px; border-bottom: 2px solid #fff;">Total de Presenças</th>
+            <th style="padding: 12px; border-bottom: 2px solid #fff;">Última Presença</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div style="margin-top: 20px; font-style: italic; font-size: 14px; color: #770077;">Atualizado automaticamente</div>
     </section>
   </div>
 </div>
 
 <script>
-  // Persistência localStorage usuários e sessão
-  function getUsers() {
-    const data = localStorage.getItem('users');
-    return data ? JSON.parse(data) : [];
-  }
-  function saveUsers(users) {
-    localStorage.setItem('users', JSON.stringify(users));
-  }
-  function setLoggedUser(user) {
-    localStorage.setItem('loggedUser', JSON.stringify(user));
-  }
-  function getLoggedUser() {
-    const data = localStorage.getItem('loggedUser');
-    return data ? JSON.parse(data) : null;
-  }
-  function clearLoggedUser() {
-    localStorage.removeItem('loggedUser');
-  }
+  // Utils localStorage
+  const getUsers = () => JSON.parse(localStorage.getItem('users') || '[]');
+  const saveUsers = users => localStorage.setItem('users', JSON.stringify(users));
+  const setLoggedUser = user => localStorage.setItem('loggedUser', JSON.stringify(user));
+  const getLoggedUser = () => JSON.parse(localStorage.getItem('loggedUser') || 'null');
+  const clearLoggedUser = () => localStorage.removeItem('loggedUser');
 
-  // Frequência
-  function getAttendance(email) {
-    const data = localStorage.getItem('attendance_' + email);
-    return data ? JSON.parse(data) : [];
-  }
-  function saveAttendance(email, attendance) {
-    localStorage.setItem('attendance_' + email, JSON.stringify(attendance));
-  }
+  const getAttendance = email => JSON.parse(localStorage.getItem(`attendance_${email}`) || '[]');
+  const saveAttendance = (email, data) => localStorage.setItem(`attendance_${email}`, JSON.stringify(data));
 
-  // Exibe lista presença
-  function renderAttendance(email) {
-    const list = document.getElementById('attendance-list');
-    const attendance = getAttendance(email);
-    list.innerHTML = '';
-    if(attendance.length === 0){
-      list.innerHTML = '<li>Sem registros de presença.</li>';
-      return;
-    }
-    attendance.forEach(item=>{
-      const li = document.createElement('li');
-      li.textContent = item;
-      list.appendChild(li);
-    });
-  }
+  // Elements references
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const toRegister = document.getElementById('to-register');
+  const toLogin = document.getElementById('to-login');
+  const loginError = document.getElementById('login-error');
+  const registerError = document.getElementById('register-error');
+  const registerSuccess = document.getElementById('register-success');
+  const loginRegisterSection = document.getElementById('login-register-section');
+  const mainSection = document.getElementById('main-section');
 
-  // Alternar visibilidade
-  function showLoginRegister(show) {
-    document.getElementById('login-register-section').style.display = show ? 'block' : 'none';
-    document.getElementById('main-section').style.display = show ? 'none' : 'block';
-  }
+  const welcomeMsg = document.getElementById('welcome-msg');
+  const btnLogout = document.getElementById('btn-logout');
+  const btnRegisterAttendance = document.getElementById('btn-register-attendance');
+  const attendanceList = document.getElementById('attendance-list');
+  const riskForm = document.getElementById('risk-form');
+  const riskMessage = document.getElementById('risk-message');
+  const spreadsheetTableBody = document.querySelector('#spreadsheet-table tbody');
 
-  // Validações simples
-  function validateEmail(email) {
-    return email.includes('@');
-  }
+  // Tabs elements
+  const tabAttendance = document.getElementById('tab-attendance');
+  const tabRisk = document.getElementById('tab-risk');
+  const tabSpreadsheet = document.getElementById('tab-spreadsheet');
+  const attendanceSection = document.getElementById('attendance-section');
+  const riskSection = document.getElementById('risk-section');
+  const spreadsheetSection = document.getElementById('spreadsheet-section');
 
-  document.getElementById('to-register').addEventListener('click', function(){ toggleForms('register'); });
-  document.getElementById('to-login').addEventListener('click', function(){ toggleForms('login'); });
-
-  document.getElementById('to-register').addEventListener('keypress', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleForms('register'); } });
-  document.getElementById('to-login').addEventListener('keypress', function(e){ if(e.key==='Enter'||e.key===' ') { e.preventDefault(); toggleForms('login'); } });
-
-  function toggleForms(form){
-    const regForm = document.getElementById('register-form');
-    const loginForm = document.getElementById('login-form');
-    const regError = document.getElementById('register-error');
-    const regSuccess = document.getElementById('register-success');
-    const loginError = document.getElementById('login-error');
-
-    regError.textContent = '';
-    regSuccess.textContent = '';
+  // Clear messages
+  function clearMessages(){
     loginError.textContent = '';
+    registerError.textContent = '';
+    registerSuccess.textContent = '';
+    riskMessage.textContent = '';
+    riskMessage.className = '';
+  }
 
-    if(form === 'register'){
-      regForm.style.display = 'block';
-      loginForm.style.display = 'none';
-    } else {
-      regForm.style.display = 'none';
+  // Show login or register form
+  function showForm(form){
+    clearMessages();
+    if(form === 'login'){
       loginForm.style.display = 'block';
+      registerForm.style.display = 'none';
+    } else {
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
     }
   }
 
-  // Registro
-  document.getElementById('register-form').addEventListener('submit', function(e){
+  toRegister.addEventListener('click', ()=>showForm('register'));
+  toLogin.addEventListener('click', ()=>showForm('login'));
+  toRegister.addEventListener('keypress', e => { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); showForm('register'); } });
+  toLogin.addEventListener('keypress', e => { if(e.key==='Enter' || e.key===' ') { e.preventDefault(); showForm('login'); } });
+
+  // Register new user
+  registerForm.addEventListener('submit', e =>{
     e.preventDefault();
+    clearMessages();
     const name = document.getElementById('reg-name').value.trim();
     const email = document.getElementById('reg-email').value.trim().toLowerCase();
     const password = document.getElementById('reg-password').value;
-    const regError = document.getElementById('register-error');
-    const regSuccess = document.getElementById('register-success');
-    regError.textContent = '';
-    regSuccess.textContent = '';
 
     if(!name || !email || !password){
-      regError.textContent = 'Todos os campos são obrigatórios.';
+      registerError.textContent = 'Todos os campos são obrigatórios.';
       return;
     }
-    if(!validateEmail(email)){
-      regError.textContent = 'Digite um e-mail válido.';
+    if(!email.includes('@')){
+      registerError.textContent = 'Digite um e-mail válido.';
       return;
     }
     if(password.length < 6){
-      regError.textContent = 'Senha deve ter ao menos 6 caracteres.';
+      registerError.textContent = 'Senha deve ter ao menos 6 caracteres.';
       return;
     }
-
     const users = getUsers();
-    if(users.some(u=>u.email===email)){
-      regError.textContent = 'Este e-mail já está cadastrado.';
+    if(users.some(u=>u.email === email)){
+      registerError.textContent = 'Este e-mail já está cadastrado.';
       return;
     }
     users.push({name,email,password});
     saveUsers(users);
-    regSuccess.textContent = 'Cadastro realizado com sucesso! Faça login.';
-    this.reset();
-    setTimeout(()=>toggleForms('login'), 1800);
+    registerSuccess.textContent = 'Cadastro realizado com sucesso! Faça login.';
+    registerForm.reset();
+    setTimeout(()=>showForm('login'), 1800);
   });
 
-  // Login
-  document.getElementById('login-form').addEventListener('submit', function(e){
+  // User login
+  loginForm.addEventListener('submit', e=>{
     e.preventDefault();
+    clearMessages();
     const email = document.getElementById('login-email').value.trim().toLowerCase();
     const password = document.getElementById('login-password').value;
-    const loginError = document.getElementById('login-error');
-    loginError.textContent = '';
 
     if(!email || !password){
       loginError.textContent = 'E-mail e senha são necessários.';
       return;
     }
-    if(!validateEmail(email)){
+    if(!email.includes('@')){
       loginError.textContent = 'Digite um e-mail válido.';
       return;
     }
     const users = getUsers();
-    const user = users.find(u => u.email === email && u.password === password);
+    const user = users.find(u=>u.email === email && u.password === password);
     if(!user){
       loginError.textContent = 'E-mail ou senha incorretos.';
       return;
@@ -407,101 +501,164 @@
     initializeMainView();
   });
 
-  // Inicializa a visualização principal após login
+  // Initialize main app view
   function initializeMainView(){
+    clearMessages();
     const user = getLoggedUser();
-    if(!user) {
-      showLoginRegister(true);
+    if(!user){
+      toggleToLogin();
       return;
     }
-    showLoginRegister(false);
-    const welcomeMsg = document.getElementById('welcome-msg');
+    loginRegisterSection.style.display = 'none';
+    mainSection.classList.remove('hidden');
     welcomeMsg.textContent = `Bem-vindo(a), ${user.name}!`;
     renderAttendance(user.email);
+    updateSpreadsheet();
     resetRiskFormAndMessage();
+    activateTab('attendance');
   }
 
-  // Logout
-  document.getElementById('btn-logout').addEventListener('click', ()=>{
+  // Handle logout
+  btnLogout.addEventListener('click', ()=>{
     clearLoggedUser();
-    toggleForms('login');
-    showLoginRegister(true);
+    mainSection.classList.add('hidden');
+    loginRegisterSection.style.display = 'block';
+    showForm('login');
   });
 
-  // Registrar frequência
-  document.getElementById('btn-register-attendance').addEventListener('click', ()=>{
+  // Register attendance
+  btnRegisterAttendance.addEventListener('click', ()=>{
     const user = getLoggedUser();
     if(!user) return;
-    const attendance = getAttendance(user.email);
+    let attendance = getAttendance(user.email);
     const now = new Date();
     const formatted = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
     attendance.unshift(formatted);
     saveAttendance(user.email, attendance);
     renderAttendance(user.email);
+    updateSpreadsheet();
   });
 
-  // Avaliação de risco
-  document.getElementById('risk-form').addEventListener('submit', e=>{
+  // Render attendance list
+  function renderAttendance(email){
+    attendanceList.innerHTML = '';
+    const attendance = getAttendance(email);
+    if(attendance.length === 0){
+      attendanceList.innerHTML = '<li>Sem registros de presença.</li>';
+      return;
+    }
+    attendance.forEach(item=>{
+      const li = document.createElement('li');
+      li.textContent = item;
+      attendanceList.appendChild(li);
+    });
+  }
+
+  // Risk form submission and logic
+  riskForm.addEventListener('submit', e=>{
     e.preventDefault();
+    riskMessage.textContent = '';
+    riskMessage.className = '';
 
     const cardiacProblems = document.getElementById('cardiac-problems').value;
     const weeklyFrequency = parseInt(document.getElementById('weekly-frequency').value,10);
     const priorCancellation = document.getElementById('prior-cancellation').value;
     const otherConditions = document.getElementById('other-conditions').value.trim();
 
-    const riskMsgDiv = document.getElementById('risk-message');
-    riskMsgDiv.textContent = '';
-    riskMsgDiv.className = '';
-
-    // Regras simples para risco
-    let riskLevel = 'baixo';
-
-    // Define peso para fatores
     let score = 0;
     if(cardiacProblems === 'sim') score += 3;
     if(priorCancellation === 'sim') score += 2;
     if(weeklyFrequency < 2) score += 2;
     if(otherConditions.length > 0) score += 1;
 
-    // Determina risco
-    if(score >= 5){
-      riskLevel = 'alto';
-    }
-    else if(score >= 3){
-      riskLevel = 'medio';
-    }
+    let riskLevel = 'baixo';
+    if(score >= 5) riskLevel = 'alto';
+    else if(score >= 3) riskLevel = 'medio';
 
     let message = '';
-    if(riskLevel === 'alto'){
-      message = 'Alto risco de desistência. Recomendamos acompanhamento médico e atenção especial.';
-    } else if(riskLevel === 'medio'){
-      message = 'Risco médio de desistência. Considere suporte e monitoramento frequente.';
-    } else {
-      message = 'Baixo risco de desistência. Continue com sua rotina!';
-    }
+    if(riskLevel === 'alto') message = 'Alto risco de desistência. Recomendamos acompanhamento médico e atenção especial.';
+    else if(riskLevel === 'medio') message = 'Risco médio de desistência. Considere suporte e monitoramento frequente.';
+    else message = 'Baixo risco de desistência. Continue com sua rotina!';
 
-    riskMsgDiv.textContent = message;
-    riskMsgDiv.classList.add(riskLevel);
+    riskMessage.textContent = message;
+    riskMessage.classList.add(riskLevel);
   });
 
   function resetRiskFormAndMessage(){
-    document.getElementById('risk-form').reset();
-    const riskMsgDiv = document.getElementById('risk-message');
-    riskMsgDiv.textContent = '';
-    riskMsgDiv.className = '';
+    riskForm.reset();
+    riskMessage.textContent = '';
+    riskMessage.className = '';
   }
 
-  // Ao carregar página, já verifica login e mostra tela correta
+  // Tabs control
+  tabAttendance.addEventListener('click', () => activateTab('attendance'));
+  tabRisk.addEventListener('click', () => activateTab('risk'));
+  tabSpreadsheet.addEventListener('click', () => activateTab('spreadsheet'));
+
+  function activateTab(tabName){
+    tabAttendance.setAttribute('aria-selected', tabName === 'attendance');
+    tabAttendance.tabIndex = (tabName === 'attendance') ? 0 : -1;
+    tabRisk.setAttribute('aria-selected', tabName === 'risk');
+    tabRisk.tabIndex = (tabName === 'risk') ? 0 : -1;
+    tabSpreadsheet.setAttribute('aria-selected', tabName === 'spreadsheet');
+    tabSpreadsheet.tabIndex = (tabName === 'spreadsheet') ? 0 : -1;
+
+    attendanceSection.classList.toggle('hidden', tabName !== 'attendance');
+    riskSection.classList.toggle('hidden', tabName !== 'risk');
+    spreadsheetSection.classList.toggle('hidden', tabName !== 'spreadsheet');
+  }
+
+  // Show login form and hide main
+  function toggleToLogin(){
+    mainSection.classList.add('hidden');
+    loginRegisterSection.style.display = 'block';
+    showForm('login');
+  }
+
+  // Spreadsheet table update
+  function updateSpreadsheet(){
+    const users = getUsers();
+    const tbody = spreadsheetTableBody;
+    tbody.innerHTML = '';
+
+    // Sort users by name ascending
+    users.sort((a,b)=>a.name.localeCompare(b.name));
+
+    users.forEach(user=>{
+      const attendance = getAttendance(user.email);
+      const tr = document.createElement('tr');
+      tr.style.background = 'rgba(255 182 193 / 0.3)';
+      tr.style.color = '#660066dd';
+      tr.style.fontWeight = '600';
+      tr.style.textAlign = 'center';
+
+      const tdName = document.createElement('td');
+      tdName.textContent = user.name;
+      tdName.style.padding = '12px';
+
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = attendance.length;
+
+      const tdLast = document.createElement('td');
+      tdLast.textContent = attendance.length > 0 ? attendance[0] : '-';
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdTotal);
+      tr.appendChild(tdLast);
+      tbody.appendChild(tr);
+    });
+  }
+
+  // On page load
   window.addEventListener('load', ()=>{
-    const user = getLoggedUser();
-    if(user){
+    const loggedUser = getLoggedUser();
+    if(loggedUser){
       initializeMainView();
-    } else {
-      showLoginRegister(true);
-      toggleForms('login');
+    } else{
+      toggleToLogin();
+      showForm('login');
     }
   });
 </script>
 </body>
 </html>
-
